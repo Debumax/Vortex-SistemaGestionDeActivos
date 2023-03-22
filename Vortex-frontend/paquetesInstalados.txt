@@ -1,0 +1,2 @@
+generador unico 
+ npm install uuid 

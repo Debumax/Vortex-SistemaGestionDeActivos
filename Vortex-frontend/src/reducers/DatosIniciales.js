@@ -1,0 +1,47 @@
+export const iniciando=[
+    {
+        EMPLOYER_ID:"1",
+        FIRST_NAME:"debo",
+        LAST_NAME:"marcial",
+        PHONE_NUMBER:"123456",
+        HIRE_DATE:"proximamnet",
+        SALARY:"10000000",
+        COMMISSION_PCT:"nocturno",
+    },
+    {
+        EMPLOYER_ID:"2",
+        FIRST_NAME:"codigo",
+        LAST_NAME:"cochinote",
+        PHONE_NUMBER:"123456",
+        HIRE_DATE:"proximamnet",
+        SALARY:"10000000",
+        COMMISSION_PCT:"nocturno",
+    },
+    {
+        EMPLOYER_ID:"3",
+        FIRST_NAME:"se hizo",
+        LAST_NAME:"lo que se pudo",
+        PHONE_NUMBER:"123456",
+        HIRE_DATE:"proximamnet",
+        SALARY:"10000000",
+        COMMISSION_PCT:"nocturno",
+    },
+    {
+        EMPLOYER_ID:"4",
+        FIRST_NAME:"dale alegria",
+        LAST_NAME:"macarena",
+        PHONE_NUMBER:"123456",
+        HIRE_DATE:"proximamnet",
+        SALARY:"10000000",
+        COMMISSION_PCT:"nocturno",
+    },
+    {
+        EMPLOYER_ID:"5",
+        FIRST_NAME:"uwuu",
+        LAST_NAME:"onichan",
+        PHONE_NUMBER:"123456",
+        HIRE_DATE:"proximamnet",
+        SALARY:"10000000",
+        COMMISSION_PCT:"nocturno",
+    }
+];
