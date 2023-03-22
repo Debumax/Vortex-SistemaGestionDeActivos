@@ -6,7 +6,7 @@ const ErrorResponse = require('../helpers/ErrorResponse');
 
 const getAllEmployees = async (req, res, next) => {
     try {
-        
+
         if (Object.keys(req.query).length === 0) { // no le paso ningun query solo para poder ver todos los elementos
 
             const empleados = await modelEmployee.getAllEmployees(0, 0);
@@ -41,7 +41,7 @@ const getAllEmployees = async (req, res, next) => {
     } catch (error) {
         next(
             res.status(500).json({ mensaje: 'error interno' })
-            
+
         );
     }
 
@@ -89,7 +89,7 @@ const updateEmployee = async (req, res, next) => {
         const { first_name, last_name, cuit, team_id, join_date, rol } = req.body;
         const { id } = req.params;
         const empleado = { first_name, last_name, cuit, team_id, join_date, rol };
-        
+
         const getempleado = await modelEmployee.getEmployeById(id);
 
         if (getempleado.length != 0) {
@@ -114,15 +114,37 @@ const deleteEmployee = async (req, res, next) => {
         const { id } = req.params;
         const getempleado = await modelEmployee.getEmployeById(id);
         const assetAsociado = await modelAsset.getAssetsByEmployeeId(id)
+        console.log(Object.keys(assetAsociado).length);
+        const cantAsset=Object.keys(assetAsociado).length;
 
         if (getempleado.length != 0) {
-            if (!assetAsociado) {
+            
+            if (cantAsset===0) {
                 const empleado = await modelEmployee.deleteEmployee(id);
                 res.json({
                     mensaje: "se eliminno con exito"
                 });
             } else {
-                res.status(404).json({ mensaje: "UPS!! desvincule el asset del empleado antes de eliminar al empleado" })
+                //id_empoyee_asset, name, type, code, marca, description, purchase_date
+                console.log("asset asociado",assetAsociado);
+                assetAsociado.forEach(row => {
+                    let id_empoyee_asset = null;
+                    let name = row.name;
+                    let type = row.type;
+                    let code = row.code;
+                    let marca = row.marca;
+                    let description = row.description;
+                    let purchase_date = row.purchase_date;
+                    let assetXactualizar = { id_empoyee_asset, name, type, code, marca, description, purchase_date };
+                    
+                    modelAsset.updateAsset(row.id_asset, assetXactualizar);
+                    console.log("id eliminado ",row , assetXactualizar);
+                });
+                await modelEmployee.deleteEmployee(id);
+                
+                res.json({
+                    mensaje: "se desvinculo y se elimino con exito"
+                });
             }
 
         } else {

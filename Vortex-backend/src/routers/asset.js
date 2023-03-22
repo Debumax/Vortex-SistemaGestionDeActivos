@@ -1,6 +1,6 @@
 const express = require('express');
 const ruta = express.Router();
-const { validacionCreateAss , validacionIdAss , validacionUpdateAss} = require('../validacion/asset');
+const { validacionCreateAsset , validacionIdAsset , validacionUpdateAsset} = require('../validacion/asset');
 
 const { getAllAssets,
     getAssetsByEmployeeId,
@@ -12,15 +12,15 @@ const { getAllAssets,
 
 ruta.route('/')
     .get(getAllAssets)
-    .post(validacionCreateAss,createAsset)
+    .post(validacionCreateAsset,createAsset)
 
 
 ruta.route('/:id')
-    .get(validacionIdAss,getAssetById)
-    .patch(validacionUpdateAss,updateAsset)
-    .delete(validacionIdAss,deleteAsset)
+    .get(validacionIdAsset,getAssetById)
+    .patch(validacionUpdateAsset,updateAsset)
+    .delete(validacionIdAsset,deleteAsset)
 
 ruta.route('/employee/:id')
-.get(validacionIdAss,getAssetsByEmployeeId)
+.get(validacionIdAsset,getAssetsByEmployeeId)
 
 module.exports = ruta;

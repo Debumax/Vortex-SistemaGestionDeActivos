@@ -5,8 +5,10 @@ import EmpleadoList from "./Empleados/EmpleadoList";
 import Footer from "./Footer";
 
 
+
 const Home = (props) => {
   
+
     const verifica=()=>{
         if (props.lista.length ===0) {
             return <div>

@@ -1,6 +1,7 @@
 const express =require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 const employee= require('./routers/employee');
 const asset= require('./routers/asset');
@@ -10,7 +11,7 @@ const asset= require('./routers/asset');
 dotenv.config();
 ////////////////////
 const app= express();
-
+app.use(cors());
 
 // settings 
 app.set("PORT",process.env.PORT) ;

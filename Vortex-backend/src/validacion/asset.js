@@ -3,7 +3,7 @@ const { validacionResult } = require('./validacionResponse');
 
 // id_empoyee_asset, name, type, code, marca, description, purchase_date ,id_asset
 
-const validacionCreateAss = [
+const validacionCreateAsset = [
     
     check('name').exists().not().isEmpty().isString().isLength({ min: 2, max: 50 }),
     check('type').exists().not().isEmpty().isString().isLength({ min: 2, max: 50 }),
@@ -17,7 +17,7 @@ const validacionCreateAss = [
 
 ];
 
-const validacionIdAss= [
+const validacionIdAsset= [
     param('id').toInt().exists().not().isEmpty().isNumeric(),
     (req,res,next) => {
         validacionResult(req,res,next) // manda mensaje de error
@@ -25,7 +25,7 @@ const validacionIdAss= [
 ];
 
 
-const validacionUpdateAss = [
+const validacionUpdateAsset = [
     param('id').toInt().isNumeric(),
     check('name').exists().not().isEmpty().isString().isLength({ min: 2, max: 50 }),
     check('type').exists().not().isEmpty().isString().isLength({ min: 2, max: 50 }),
@@ -40,7 +40,7 @@ const validacionUpdateAss = [
 
 
 module.exports = { 
-    validacionCreateAss,
-    validacionIdAss,
-    validacionUpdateAss
+    validacionCreateAsset,
+    validacionIdAsset,
+    validacionUpdateAsset
 } 

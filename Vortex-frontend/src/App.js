@@ -6,7 +6,6 @@ import EmpleadoList from "./components/Empleados/EmpleadoList";
 import EmpleadoShow from "./components/Empleados/EmpleadoShow";
 import EmpleadoCreate from "./components/Empleados/EmpleadoCreate";
 import EmpleadoDelete from "./components/Empleados/EmpleadoDelete";
-import Login from "./components/Empleados/Login";
 import Error from "./components/Error";
 
 
@@ -16,10 +15,6 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Home/>  
-  },
-  {
-    path:'/login',
-    element: <Login/>
   },
   {
     path :'/empleado/new' ,

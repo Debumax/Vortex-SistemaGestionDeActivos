@@ -119,17 +119,24 @@ const updateAsset = async (req, res,next) => {
         const empleado = await modelEmployee.getEmployeById(id_empoyee_asset);
         if (id_empoyee_asset=== null ) {
             const item_actualizado = await modelAsset.updateAsset(id, item);
+            const getasset = await modelAsset.getAssetById(id);
+                res.json({ 
+                    mensaje: "actualizado con exito",
+                    data: getasset });
+        }
+        else{
+            if (getasset.length !=0 && empleado.length!=0) {
+                const item_actualizado = await modelAsset.updateAsset(id, item);
+                const getasset = await modelAsset.getAssetById(id);
+                res.json({ 
+                    mensaje: "actualizado con exito",
+                    data: getasset });
+            } else {
+                res.status(404).json({ mensaje: "UPS!! el asset o el empleado ingresado no existe  " })
+            }
         }
 
-        if (getasset.length !=0 && empleado.length!=0) {
-            const item_actualizado = await modelAsset.updateAsset(id, item);
-            const getasset = await modelAsset.getAssetById(id);
-            res.json({ 
-                mensaje: "actualizado con exito",
-                data: getasset });
-        } else {
-            res.status(404).json({ mensaje: "UPS!! el asset o el empleado ingresado no existe  " })
-        }
+
     } catch (error) {
         next( 
             new ErrorResponse('error en controllador', 500 )

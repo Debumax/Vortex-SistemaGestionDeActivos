@@ -126,7 +126,14 @@ const updateAsset = async (id, item) => {
     try {
         const { id_empoyee_asset, name, type, code, marca, description, purchase_date } = item;
         const context = await connection.getConnection();
-        const resultado = context.query("UPDATE asset SET id_empoyee_asset=IFNULL(?,id_empoyee_asset),name=IFNULL(?,name),type=IFNULL(?,type),code=IFNULL(?,code),marca=IFNULL(?,marca),description=IFNULL(?,description),purchase_date=IFNULL(?,purchase_date) WHERE id_asset=?", [id_empoyee_asset, name, type, code, marca, description, purchase_date, id]);
+        console.log("en el modelo",item)
+        if (id_empoyee_asset===null) {
+            const resultado = context.query("UPDATE asset SET id_empoyee_asset = null,name=IFNULL(?,name),type=IFNULL(?,type),code=IFNULL(?,code),marca=IFNULL(?,marca),description=IFNULL(?,description),purchase_date=IFNULL(?,purchase_date) WHERE id_asset=?", [ name, type, code, marca, description, purchase_date, id]);
+            
+        } else {
+            const resultado = context.query("UPDATE asset SET id_empoyee_asset=IFNULL(?,id_empoyee_asset),name=IFNULL(?,name),type=IFNULL(?,type),code=IFNULL(?,code),marca=IFNULL(?,marca),description=IFNULL(?,description),purchase_date=IFNULL(?,purchase_date) WHERE id_asset=?", [id_empoyee_asset, name, type, code, marca, description, purchase_date, id]);
+
+        }
         return (resultado);
     } catch (error) {
 
