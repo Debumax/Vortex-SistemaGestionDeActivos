@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom'; // hook 
+import { getEmpleadoByID, setEmpleadoByID, setEmpleados } from "../../actios";
+import { getEmpleados } from "../../api-backend/api";
 import FormularioVerEditar from '../FormularioVerEditar';
 
-const EmpleadoShow=(props)=>{
-    const [ver_empleado,setVer_empleado]=useState('');
-
-    const parametro=useParams();//hook router
-    const id=parametro.empId;
+const EmpleadoShow = () => {
 
     return (
         <div>
-            <FormularioVerEditar id={parametro.empId}/>
+            <FormularioVerEditar />
         </div>
     );
 };
 
-const mapStateToProps = state => {
-    return { lista : state.listaEmpleados}
- };
-export default connect(mapStateToProps)(EmpleadoShow);
+
+export default EmpleadoShow;

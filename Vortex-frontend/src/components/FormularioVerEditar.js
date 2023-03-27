@@ -1,160 +1,179 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { connect } from "react-redux";
-import { editarEmpleado } from "../actios";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { editarEmpleado, getEmpleadoByID, patchEmpleado, setEmpleados } from "../actios";
 import Encabezado from "./Encabezado";
 import Footer from "./Footer";
+import { getEmpleados } from "../api-backend/api";
+import moment from "moment/moment";
 
-const Formulario=(props)=>{
-    const navegar= useNavigate();
-    const [boton,setBoton]=useState('Editar');//editar /guardar
-    const [botonVC,setBotonVC]=useState('Home');//home / cancelar
-    const [isDisabled,setIsDisabled]=useState(true);//habilita/deshabilita los input
+const Formulario = (props) => {
+    const navegar = useNavigate();
+    const [boton, setBoton] = useState('Editar');//editar /guardar
+    const [botonVC, setBotonVC] = useState('Home');//home / cancelar
+    const [isDisabled, setIsDisabled] = useState(true);//habilita/deshabilita los input
     //estados iniciales
-    const [id,setId]=useState('');
-    const [nombre,setNombre]=useState('');
-    const [nombre2,setNombre2]=useState('');
-    const [telefono,setTelefono]=useState('');
-    const [contratacion,setContratacion]=useState('');
-    const [salario,setSalario]=useState('');
-    const [comision,setComision]=useState(''); 
-    const [ver_empleado,setVer_empleado]=useState(props.lista.find(emp => emp.EMPLOYER_ID === props.id));// lo que obtengo de la lista de empleads
-    const [titulo,setTitulo]=useState('Ver');
-    
-    useEffect( () => {    
-        setNombre(ver_empleado.FIRST_NAME);
-        setNombre2(ver_empleado.LAST_NAME);
-        setTelefono(ver_empleado.PHONE_NUMBER);
-        setContratacion(ver_empleado.HIRE_DATE);
-        setSalario(ver_empleado.SALARY);
-        setComision(ver_empleado.COMMISSION_PCT);
-        setId(ver_empleado.EMPLOYER_ID);
-    },[]);
+    const [id, setId] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [apellido, setApellido] = useState('');
+    const [cuit, setCuit] = useState('');
+    const [joinDate, setjoinDate] = useState('');
+    const [rol, setRol] = useState('');
+    const [teamID, setTeamID] = useState('');
+    const [titulo, setTitulo] = useState('Ver');
+
+
+    const dispatch = useDispatch();
+    const parametro = useParams();
+
+    const empleadosApi = useSelector(state => state.listaEmpleados);
+    const emp = empleadosApi.empleado;
+    const fecha = moment.utc(emp.join_date).format('YYYY-MM-DD');
+
+    const id_param_actual = parametro.empId;
+
+    useEffect(() => {
+        dispatch(getEmpleadoByID(id_param_actual));
+
+    }, []);
+
+    useEffect(() => {
+        if (emp) {
+            setId(emp.id_employee);
+            setNombre(emp.first_name);
+            setApellido(emp.last_name);
+            setCuit(emp.cuit);
+            setjoinDate(fecha);
+            setRol(emp.rol);
+            setTeamID(emp.team_id);
+            setId(emp.id_employee);
+
+        }
+    },[emp]);
+
 
     // me lleva  a editar-empleado o desencadena el update 
-    const BtonIrA=(e)=>{
+    const BtonIrA = (e) => {
         e.preventDefault();
-        if (boton==='Editar') {
+        if (boton === 'Editar') {
             setBoton('Guardar');
             setBotonVC('Cancelar');
             setIsDisabled(false); // por ahora cuando le doy clic a editar se bloqueara , para ver si funciona
-            setTitulo('Editando'); 
+            setTitulo('Editando');
         }
-        if (boton==='Guardar') {
+        if (boton === 'Guardar') {
             //me va a renderizar los valores o va a ir al inicio mas + un cartel de guardo los cambios
-            const empEditado={
-                EMPLOYER_ID:id ,
-                FIRST_NAME:nombre,
-                LAST_NAME:nombre2,
-                PHONE_NUMBER:telefono,
-                HIRE_DATE:contratacion,
-                SALARY:salario,
-                COMMISSION_PCT:comision     
+            const empEditado = {
+                first_name: nombre,
+                last_name: apellido,
+                cuit: cuit,
+                join_date: joinDate,
+                rol: rol,
+                team_id: teamID
             }
             //console.log(empEditado);
-            props.editarEmpleado(empEditado);
+            dispatch(patchEmpleado(id,empEditado))
             setIsDisabled(true);
             setBoton('Editar');
             setBotonVC('Home');
-            alert('guardo los cambios'); 
-            setTitulo('Ver')              
+            alert('guardo los cambios');
+            setTitulo('Ver')
         }
     };
     //me lleva al home (volver) o al "vista de ver" (cancelar)
-    const BtnAtras=(e)=>{
+    const BtnAtras = (e) => {
         e.preventDefault();
-        if (botonVC==='Cancelar' && boton==='Guardar') {
+        if (botonVC === 'Cancelar' && boton === 'Guardar') {
             setBoton('Editar');
             setBotonVC('Home');
-            setTitulo('Ver') 
-            setNombre(ver_empleado.FIRST_NAME);
-            setNombre2(ver_empleado.LAST_NAME);
-            setTelefono(ver_empleado.PHONE_NUMBER);
-            setContratacion(ver_empleado.HIRE_DATE);
-            setSalario(ver_empleado.SALARY);
-            setComision(ver_empleado.COMMISSION_PCT);
-            setId(ver_empleado.EMPLOYER_ID);
-            setIsDisabled(true);                       
+            setTitulo('Ver')
+            setNombre(emp.first_name);
+            setApellido(emp.last_name);
+            setCuit(emp.cuit);
+            setjoinDate(emp.join_date);
+            setRol(emp.rol);
+            setTeamID(emp.team_id);
+            setId(emp.id_employee);
+            setIsDisabled(true);
         }
-        if (botonVC==='Home') {
+        if (botonVC === 'Home') {
             navegar('/');
-        } 
+        }
     };
 
-    const manejarCambio= (e)=>{
-        const valor= e.target.value;
-        const name= e.target.name;
-                 
+    const manejarCambio = (e) => {
+        const valor = e.target.value;
+        const name = e.target.name;
+
         switch (name) {
-            case 'nombre':    
-                setNombre(valor);                        
+            case 'nombre':
+                setNombre(valor);
                 break;
-            case 'nombre2':
-                setNombre2(valor);
+            case 'apellido':
+                setApellido(valor);
                 break;
-            case 'telefono':
-                setTelefono(valor); 
+            case 'cuit':
+                setCuit(valor);
                 break;
-            case 'contratacion':
-                setContratacion(valor);
+            case 'join_date':
+                setjoinDate(valor);
                 break;
-            case 'salario':
-                setSalario(valor);
+            case 'rol':
+                setRol(valor);
                 break;
-            case 'comision':
-                setComision(valor);  
+            case 'team_id':
+                setTeamID(valor);
                 break;
             default:
                 break;
-        }           
+        }
     };
+
     return (
         <>
-            <Encabezado/>
-            <div style={{marginBottom:'207px'}}>
-            <div className="container">
-                <h1 className="display-5 container">{titulo} Empleado</h1>
-                <br/>
-                <form className="row g-3 "  onSubmit={BtonIrA}>
-                    <div className="col-md-4">
-                        <label className="form-label">First name </label>
-                        <input type="text" className="form-control" name="nombre"  value={nombre}  id="input_clic" onChange={manejarCambio}  disabled={isDisabled} required />
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Last name</label>
-                        <input type="text" className="form-control" name="nombre2" value={nombre2}  id="input_clic" onChange={manejarCambio}  disabled={isDisabled} required />
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Phone</label>
-                        <input type="text" className="form-control" name="telefono" value={telefono}  id="input_clic" onChange={manejarCambio}  disabled={isDisabled} required />
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Hire Date</label>
-                        <input type="text" className="form-control" name="contratacion" value={contratacion}  id="input_clic" onChange={manejarCambio}  disabled={isDisabled} required />
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Salary</label>                   
-                        <input type="text" className="form-control" name="salario" value={salario}  id="input_clic"  onChange={manejarCambio}  disabled={isDisabled} required/>                    
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Commission</label>
-                        <input type="text" className="form-control" name="comision"  value={comision}  id="input_clic" onChange={manejarCambio}  disabled={isDisabled} required />
-                    </div>
-        
-                    <div className="col-md-4">
-                        <button className="btn btn-primary" type="submit" style={{margin:'2%'}} >{boton}</button>
-                        <button className="btn btn-primary" type="text" onClick={BtnAtras} style={{margin:'2%'}} >{botonVC}</button> 
-                        
-                    </div>
-                </form>
+            <Encabezado />
+            <div style={{ marginBottom: '207px' }}>
+                <div className="container">
+                    <h1 className="display-5 container">{titulo} Empleado</h1>
+                    <br />
+                    <form className="row g-3 " onSubmit={BtonIrA}>
+                        <div className="col-md-4">
+                            <label className="form-label">Nombre </label>
+                            <input type="text" className="form-control" name="nombre" value={nombre} id="input_clic" onChange={manejarCambio} disabled={isDisabled} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Apellido</label>
+                            <input type="text" className="form-control" name="apellido" value={apellido} id="input_clic" onChange={manejarCambio} disabled={isDisabled} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Cuit</label>
+                            <input type="text" className="form-control" name="cuit" value={cuit} id="input_clic" onChange={manejarCambio} disabled={isDisabled} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Rol</label>
+                            <input type="text" className="form-control" name="rol" value={rol} id="input_clic" onChange={manejarCambio} disabled={isDisabled} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Fecha de ingreso</label>
+                            <input type="text" className="form-control" name="join_date" value={joinDate} id="input_clic" onChange={manejarCambio} disabled={isDisabled} required />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Team</label>
+                            <input type="text" className="form-control" name="team_id" value={teamID} id="input_clic" onChange={manejarCambio} disabled={isDisabled} required />
+                        </div>
+
+                        <div className="col-md-4">
+                            <button className="btn btn-primary" type="submit" style={{ margin: '2%' }} >{boton}</button>
+                            <button className="btn btn-primary" type="text" onClick={BtnAtras} style={{ margin: '2%' }} >{botonVC}</button>
+
+                        </div>
+                    </form>
+                </div>
             </div>
-            </div>
-            <Footer/>
+            <Footer />
         </>
     );
 };
-const mapStateToProps = state => {
-    return { lista : state.listaEmpleados}
- };
-export default connect(mapStateToProps,{editarEmpleado})(Formulario);
+
+export default Formulario;
 
